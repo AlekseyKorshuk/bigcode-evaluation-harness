@@ -102,6 +102,20 @@ class HumanEvalChatML(Task):
 
 
 def get_completion(response, function_name):
+    code_snippets = re.findall(
+        "```(.*?)```",
+        response,
+        re.DOTALL
+    )
+    code_snippets = [code_snippet for code_snippet in code_snippets if
+                     "return" in code_snippet and f"def {function_name}:" in code_snippet]
+    code_snippet = code_snippets[0]
+    code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
+    code_snippet = code_snippet.strip()
+    return code_snippet
+
+
+def get_completion_(response, function_name):
     code_snippets = [
         code_snippet
         for code_snippet in
