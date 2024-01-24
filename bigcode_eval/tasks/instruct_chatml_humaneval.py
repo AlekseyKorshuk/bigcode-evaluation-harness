@@ -9,9 +9,9 @@ They were handwritten to ensure not to be included in the training set of code g
 Homepage: https://github.com/openai/human-eval
 """
 import re
+import warnings
 
 from bigcode_eval.base import Task
-from bigcode_eval.utils import remove_after_return
 from bigcode_eval.tasks.custom_metrics.code_eval import compute_code_eval
 
 _CITATION = """
@@ -28,13 +28,14 @@ _CITATION = """
 
 def generate_prompt(sample):
     return f"<|im_start|>system\n" \
-           f"You are an expert in Software Development.<|im_end|>\n" \
+           f"You are a helpful assistant.<|im_end|>\n" \
            f"<|im_start|>user\n" \
            f"Complete a Python function to solve the following problem:\n" \
            f"\n" \
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
-           f"```<|im_end|>\n" \
+           f"```\n" \
+           f"\nUse only one markdown block in your response!<|im_end|>\n" \
            f"<|im_start|>assistant\n"
 
 
@@ -110,8 +111,8 @@ def get_completion(response, function_name):
     code_snippets = [code_snippet for code_snippet in code_snippets if
                      "return" in code_snippet and f"def " in code_snippet]
     if len(code_snippets) > 1:
-        print(f"Warning: More than one code snippet found for {function_name}")
-        print(code_snippets)
+        warnings.warn(f"More than one code snippet found for {function_name}")
+        warnings.warn(str(code_snippets))
     code_snippet = sorted(code_snippets, key=lambda x: len(x), reverse=True)[0]
     code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
     code_snippet = code_snippet.strip()
