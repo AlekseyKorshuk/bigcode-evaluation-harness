@@ -74,9 +74,12 @@ class HumanEvalChatML(Task):
             index of doc in the dataset to which the generation belongs
             (not used for Humaneval-Task)
         """
+        generation = generation[generation.find("assistant\n") + len("assistant\n"):]
         print("GENERATION")
         print(generation)
         generation = self._stop_at_stop_token(generation, self.stop_words)
+        print("_stop_at_stop_token")
+        print(generation)
         function_name = self.get_dataset()["entry_point"][idx]
         func_index = generation.find(f"def {function_name}")
         return generation[0:func_index] + remove_after_return(generation[func_index:])
