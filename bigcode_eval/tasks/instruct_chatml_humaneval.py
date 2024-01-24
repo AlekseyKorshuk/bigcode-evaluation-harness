@@ -112,7 +112,7 @@ def get_completion(response, function_name):
     if len(code_snippets) > 1:
         print(f"Warning: More than one code snippet found for {function_name}")
         print(code_snippets)
-    code_snippet = code_snippets[0]
+    code_snippet = sorted(code_snippets, key=lambda x: len(x), reverse=True)[0]
     code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
     code_snippet = code_snippet.strip()
     return code_snippet
