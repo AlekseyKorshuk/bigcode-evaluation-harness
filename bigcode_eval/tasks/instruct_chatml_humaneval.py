@@ -74,15 +74,17 @@ class HumanEvalChatML(Task):
             index of doc in the dataset to which the generation belongs
             (not used for Humaneval-Task)
         """
-        generation = generation[generation.find("assistant\n") + len("assistant\n"):]
+        cropped_generation = generation[generation.find("assistant\n") + len("assistant\n"):]
         sample = self.get_dataset()[idx]
         function_name = sample["signature"]
         try:
-            generation = get_completion(generation, function_name)
+            cropped_generation = get_completion(cropped_generation, function_name)
+            final_generation = sample["prompt"] + cropped_generation
         except:
             print(f"Error in postprocessing generation for {function_name}")
             print(generation)
-        return sample["prompt"] + generation
+            final_generation = generation
+        return final_generation
 
     def process_results(self, generations, references):
         """Takes the list of LM generations and evaluates them against ground truth references,
@@ -100,10 +102,17 @@ class HumanEvalChatML(Task):
 
 
 def get_completion(response, function_name):
-    code_snippet = [
+    code_snippets = [
         code_snippet
-        for code_snippet in re.findall(escape_special_characters(f"def {function_name}:\\n") + "(.*?)```", response, re.DOTALL)
-    ][0]
+        for code_snippet in
+        re.findall(
+            escape_special_characters(f"def {function_name}:\\n") + "(.*?)```",
+            response,
+            re.DOTALL
+        )
+    ]
+    code_snippets = [code_snippet for code_snippet in code_snippets if "return" in code_snippet]
+    code_snippet = code_snippets[0]
     code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
     code_snippet = code_snippet.rstrip()
     return code_snippet
