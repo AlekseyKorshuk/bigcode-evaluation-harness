@@ -8,6 +8,7 @@ They were handwritten to ensure not to be included in the training set of code g
 
 Homepage: https://github.com/openai/human-eval
 """
+import re
 
 from bigcode_eval.base import Task
 from bigcode_eval.utils import remove_after_return
@@ -34,7 +35,7 @@ def generate_prompt(sample):
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
            f"```<|im_end|>\n" \
-           f"<|im_start|>assistant"
+           f"<|im_start|>assistant\n"
 
 
 class HumanEvalChatML(Task):
@@ -46,7 +47,7 @@ class HumanEvalChatML(Task):
 
     def __init__(self):
         super().__init__(
-            stop_words=[],
+            stop_words=["<|im_end|>"],
             requires_execution=True,
         )
 
@@ -75,14 +76,11 @@ class HumanEvalChatML(Task):
             (not used for Humaneval-Task)
         """
         generation = generation[generation.find("assistant\n") + len("assistant\n"):]
+        function_name = self.get_dataset()["entry_point"][idx]
+        generation = get_completion(generation, function_name)
         print("GENERATION")
         print(generation)
-        generation = self._stop_at_stop_token(generation, self.stop_words)
-        print("_stop_at_stop_token")
-        print(generation)
-        function_name = self.get_dataset()["entry_point"][idx]
-        func_index = generation.find(f"def {function_name}")
-        return generation[0:func_index] + remove_after_return(generation[func_index:])
+        return generation
 
     def process_results(self, generations, references):
         """Takes the list of LM generations and evaluates them against ground truth references,
@@ -97,3 +95,21 @@ class HumanEvalChatML(Task):
             predictions=generations,
         )
         return results
+
+
+def get_completion(response, function_name):
+    code_snippet = [
+        code_snippet
+        for code_snippet in re.findall(escape_special_characters(f"def {function_name}:\\n") + "(.*?)```", response, re.DOTALL)
+    ][0]
+    code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
+    code_snippet = code_snippet.rstrip()
+    return code_snippet
+    # code_snippet = re.sub(r'""".*?"""', '', code_snippet, flags=re.DOTALL)
+    # return "    " + code_snippet.strip()
+
+
+def escape_special_characters(pattern):
+    special_characters = ".[](){}*+?^$|"
+    escaped_pattern = "".join(f'\\{char}' if char in special_characters else char for char in pattern)
+    return escaped_pattern
