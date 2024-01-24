@@ -77,7 +77,12 @@ class HumanEvalChatML(Task):
         generation = generation[generation.find("assistant\n") + len("assistant\n"):]
         sample = self.get_dataset()[idx]
         function_name = sample["signature"]
-        generation = get_completion(generation, function_name)
+        try:
+            generation = get_completion(generation, function_name)
+        except:
+            print(f"Error in postprocessing generation for {function_name}")
+            print(generation)
+            generation = ""
         return sample["prompt"] + generation
 
     def process_results(self, generations, references):
