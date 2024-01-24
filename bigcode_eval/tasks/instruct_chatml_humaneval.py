@@ -34,7 +34,7 @@ def generate_prompt(sample):
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
            f"```<|im_end|>\n" \
-           f"<|im_start|>assistant\n"
+           f"<|im_start|>assistant"
 
 
 class HumanEvalChatML(Task):
@@ -57,6 +57,7 @@ class HumanEvalChatML(Task):
     def get_prompt(self, doc):
         """Builds the prompt for the LM to generate from."""
         prompt = generate_prompt(doc)
+        print(prompt)
         return prompt
 
     def get_reference(self, doc):
@@ -73,8 +74,9 @@ class HumanEvalChatML(Task):
             index of doc in the dataset to which the generation belongs
             (not used for Humaneval-Task)
         """
+        print("GENERATION")
+        print(generation)
         generation = self._stop_at_stop_token(generation, self.stop_words)
-
         function_name = self.get_dataset()["entry_point"][idx]
         func_index = generation.find(f"def {function_name}")
         return generation[0:func_index] + remove_after_return(generation[func_index:])
