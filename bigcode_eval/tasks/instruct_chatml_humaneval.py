@@ -82,7 +82,6 @@ class HumanEvalChatML(Task):
         except:
             print(f"Error in postprocessing generation for {function_name}")
             print(generation)
-            generation = ""
         return sample["prompt"] + generation
 
     def process_results(self, generations, references):
