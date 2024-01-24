@@ -76,7 +76,7 @@ class HumanEvalChatML(Task):
             (not used for Humaneval-Task)
         """
         generation = generation[generation.find("assistant\n") + len("assistant\n"):]
-        function_name = self.get_dataset()["entry_point"][idx]
+        function_name = self.get_dataset()["signature"][idx]
         generation = get_completion(generation, function_name)
         print("GENERATION")
         print(generation)
