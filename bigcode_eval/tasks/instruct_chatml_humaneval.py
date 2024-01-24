@@ -58,7 +58,6 @@ class HumanEvalChatML(Task):
     def get_prompt(self, doc):
         """Builds the prompt for the LM to generate from."""
         prompt = generate_prompt(doc)
-        print(prompt)
         return prompt
 
     def get_reference(self, doc):
@@ -76,11 +75,10 @@ class HumanEvalChatML(Task):
             (not used for Humaneval-Task)
         """
         generation = generation[generation.find("assistant\n") + len("assistant\n"):]
-        function_name = self.get_dataset()["signature"][idx]
+        sample = self.get_dataset()[idx]
+        function_name = sample["signature"]
         generation = get_completion(generation, function_name)
-        print("GENERATION")
-        print(generation)
-        return generation
+        return sample["prompt"] + generation
 
     def process_results(self, generations, references):
         """Takes the list of LM generations and evaluates them against ground truth references,
