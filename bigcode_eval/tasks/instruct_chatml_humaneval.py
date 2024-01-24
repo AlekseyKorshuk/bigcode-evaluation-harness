@@ -34,8 +34,7 @@ def generate_prompt(sample):
            f"\n" \
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
-           f"```\n" \
-           f"\nUse only one markdown block in your response!<|im_end|>\n" \
+           f"```<|im_end|>\n" \
            f"<|im_start|>assistant\n"
 
 
