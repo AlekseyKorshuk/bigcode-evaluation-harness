@@ -107,8 +107,9 @@ def get_completion(response, function_name):
         response,
         re.DOTALL
     )
+    function_name_title = function_name[:function_name.find("(")].strip()
     code_snippets = [code_snippet for code_snippet in code_snippets if
-                     "return" in code_snippet and f"def " in code_snippet]
+                     "return " in code_snippet and f"def " + function_name_title in code_snippet]
     if len(code_snippets) > 1:
         warnings.warn(f"More than one code snippet found for {function_name}")
         warnings.warn(str(code_snippets))
