@@ -79,7 +79,7 @@ class HumanEvalChatML(Task):
         function_name = sample["signature"]
         try:
             cropped_generation = get_completion(cropped_generation, function_name)
-            final_generation = sample["prompt"] + cropped_generation
+            final_generation = sample["prompt"].strip().split("def ")[0] + cropped_generation
         except:
             print(f"Error in postprocessing generation for {function_name}")
             print(generation)
