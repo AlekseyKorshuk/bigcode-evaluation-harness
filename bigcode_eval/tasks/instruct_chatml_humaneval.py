@@ -78,7 +78,7 @@ class HumanEvalChatML(Task):
         """
         cropped_generation = generation[generation.find("assistant\n") + len("assistant\n"):]
         sample = self.get_dataset()[idx]
-        function_name = sample["signature"]
+        function_name = sample["entry_point"]
         try:
             cropped_generation = get_completion(cropped_generation, function_name)
             final_generation = sample["prompt"] + cropped_generation
@@ -122,7 +122,7 @@ def get_completion(response, function_name):
     code_snippet = code_snippet.split("\n")
     def_line_idx = 0
     for idx, line in enumerate(code_snippet):
-        if line.startswith("def"):
+        if line.startswith(f"def {function_name}"):
             def_line_idx = idx
             break
     code_snippet = "\n".join(code_snippet[def_line_idx + 1:])
