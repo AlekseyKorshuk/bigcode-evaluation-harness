@@ -96,12 +96,12 @@ class HumanEvalChatML(Task):
         :param references: list(str)
             list of str containing refrences
         """
-        results, _ = compute_code_eval(
+        results, logs = compute_code_eval(
             references=references,
             predictions=generations,
         )
         with open("results.txt", "w") as f:
-            f.write(str(results))
+            f.write(str(logs))
         return results
 
 
