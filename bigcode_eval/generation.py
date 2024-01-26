@@ -71,6 +71,7 @@ def parallel_generations(
         "top_p": args.top_p,
         "top_k": args.top_k,
         "max_length": args.max_length_generation,
+        "repetition_penalty": 1.1,
     }
     stopping_criteria = []
     # The input_length / start_length set to 0 for now will be adjusted later

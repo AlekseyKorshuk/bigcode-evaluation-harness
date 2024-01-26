@@ -33,12 +33,8 @@ def generate_prompt(sample):
            f"from acclaimed sources like 'Clean Code' by Robert C. Martin, 'Pragmatic Programmer' by Andy Hunt & Dave " \
            f"Thomas, and 'Effective Python' by Brett Slatkin.<|im_end|>\n" \
            f"<|im_start|>user\n" \
-           f"{sample['instruction']}\n" \
-           f"<|im_end|>\n" \
-           f"<|im_start|>assistant\n" \
-           f"Certainly, here is the solution:\n" \
-           f"```python" \
-           f"{sample['prompt']}"
+           f"{sample['instruction']}<|im_end|>\n" \
+           f"<|im_start|>assistant"
 
 
 class HumanEvalChatML(Task):
