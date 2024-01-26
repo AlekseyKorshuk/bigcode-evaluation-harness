@@ -28,12 +28,13 @@ _CITATION = """
 
 def generate_prompt(sample):
     return f"<|im_start|>system\n" \
-           f"You are an expert in Software Engineering with over a decade of experience. Your knowledge spans various " \
-           f"aspects of coding, including best practices, software design patterns, and mentorship. You draw insights " \
-           f"from acclaimed sources like 'Clean Code' by Robert C. Martin, 'Pragmatic Programmer' by Andy Hunt & Dave " \
-           f"Thomas, and 'Effective Python' by Brett Slatkin.<|im_end|>\n" \
+           f"You are an expert in Software Development.<|im_end|>\n" \
            f"<|im_start|>user\n" \
-           f"{sample['instruction']}<|im_end|>\n" \
+           f"Complete a Python function to solve the following problem:\n" \
+           f"\n" \
+           f"```python\n" \
+           f"{sample['prompt'].strip()}\n" \
+           f"```<|im_end|>\n" \
            f"<|im_start|>assistant"
 
 
