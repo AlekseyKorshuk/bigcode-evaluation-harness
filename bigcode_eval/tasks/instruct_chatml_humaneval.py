@@ -30,10 +30,11 @@ def generate_prompt(sample):
     return f"<|im_start|>system\n" \
            f"You are an expert in Software Development.<|im_end|>\n" \
            f"<|im_start|>user\n" \
-           f"Complete a Python function to solve the following problem:\n" \
+           f"Complete a Python function based on it's description:\n" \
            f"\n" \
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
+           f"    # Your code here" \
            f"```\n" \
            f"Use only single Markdown code block in your response!<|im_end|>\n" \
            f"<|im_start|>assistant"
