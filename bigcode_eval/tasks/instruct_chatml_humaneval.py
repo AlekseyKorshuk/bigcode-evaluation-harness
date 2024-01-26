@@ -36,7 +36,7 @@ def generate_prompt(sample):
            f"{sample['prompt'].strip()}\n" \
            f"    # Your code here" \
            f"```\n" \
-           f"Use only single Markdown code block in your response!<|im_end|>\n" \
+           f"Write single correct completion to the given task.<|im_end|>\n" \
            f"<|im_start|>assistant"
 
 
