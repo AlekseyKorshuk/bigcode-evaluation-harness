@@ -80,7 +80,7 @@ class HumanEvalChatML(Task):
         function_name = sample["signature"]
         try:
             cropped_generation = get_completion(cropped_generation, function_name)
-            final_generation = sample["prompt"].strip().split("def ")[0] + cropped_generation
+            final_generation = sample["prompt"] + cropped_generation
         except:
             print(f"Error in postprocessing generation for {function_name}")
             print(generation)
@@ -108,15 +108,17 @@ def get_completion(response, function_name):
         response,
         re.DOTALL
     )
-    function_name_title = function_name[:function_name.find("(")].strip()
     code_snippets = [code_snippet for code_snippet in code_snippets if
-                     "return " in code_snippet and f"def " + function_name_title in code_snippet]
+                     "return " in code_snippet and f"def " in code_snippet]
     if len(code_snippets) > 1:
         warnings.warn(f"More than one code snippet found for {function_name}")
         warnings.warn(str(code_snippets))
     code_snippet = sorted(code_snippets, key=lambda x: len(x), reverse=True)[0]
     code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
-    code_snippet = code_snippet.strip()
+    # split by newlines and get lines after def line (find its index)
+    code_snippet = code_snippet.split("\n")
+    def_line_idx = [idx for idx, line in enumerate(code_snippet) if f"def " in line][0]
+    code_snippet = "\n".join(code_snippet[def_line_idx:])
     return code_snippet
 
 
