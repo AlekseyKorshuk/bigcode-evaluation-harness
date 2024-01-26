@@ -100,7 +100,8 @@ class HumanEvalChatML(Task):
             references=references,
             predictions=generations,
         )
-        print(results)
+        with open("results.txt", "w") as f:
+            f.write(str(results))
         return results
 
 
