@@ -117,8 +117,12 @@ def get_completion(response, function_name):
     code_snippet = code_snippet.replace("python\n", "", 1) if code_snippet.startswith("python\n") else code_snippet
     # split by newlines and get lines after def line (find its index)
     code_snippet = code_snippet.split("\n")
-    def_line_idx = [idx for idx, line in enumerate(code_snippet) if f"def " in line][0]
-    code_snippet = "\n".join(code_snippet[def_line_idx:])
+    def_line_idx = 0
+    for idx, line in enumerate(code_snippet):
+        if line.startswith("def"):
+            def_line_idx = idx
+            break
+    code_snippet = "\n".join(code_snippet[def_line_idx + 1:])
     return code_snippet
 
 
