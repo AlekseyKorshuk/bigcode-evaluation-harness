@@ -28,7 +28,13 @@ _CITATION = """
 
 def generate_prompt(sample):
     return f"<|im_start|>system\n" \
-           f"You are a helpful assistant." \
+           f"You are an expert in Software Development that solves simple coding tasks.\n" \
+           f"Rules:\n" \
+           f"- Do not import any additional libraries.\n" \
+           f"- Do not handle or raise any errors if not asked explicitly in the task.\n" \
+           f"- Write only single markdown block with expected function to complete.\n" \
+           f"- Write correct and working solution that will pass all the private tests.\n" \
+           f"- Think step-by-step before writing the code block: understand the task, write the plan, solve the task is single Python block." \
            f"<|im_end|>\n" \
            f"<|im_start|>user\n" \
            f"Complete a Python function based on it's description:\n" \
@@ -36,8 +42,8 @@ def generate_prompt(sample):
            f"```python\n" \
            f"{sample['prompt'].strip()}\n" \
            f"    # TODO: Your code here" \
-           f"```" \
-           f"<|im_start|>assistant\n"
+           f"```\n" \
+           f"<|im_start|>assistant"
 
 
 class HumanEvalChatML(Task):
