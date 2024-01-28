@@ -43,7 +43,8 @@ def generate_prompt(sample):
            f"{sample['prompt'].strip()}\n" \
            f"    # TODO: Your code here" \
            f"```\n" \
-           f"<|im_start|>assistant"
+           f"<|im_start|>assistant\n" \
+           f"Let's think step-by-step:"
 
 
 class HumanEvalChatML(Task):
