@@ -78,7 +78,7 @@ class HumanEvalWizardCoder(Task):
                 next_line = completion.index("```")
                 completion = completion[:next_line].strip()
             except:
-                a += 1
+                pass
         if '__name__ == "__main__"' in completion:
             next_line = completion.index('if __name__ == "__main__":')
             completion = completion[:next_line].strip()
